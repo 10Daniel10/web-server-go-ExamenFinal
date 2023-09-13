@@ -1,11 +1,13 @@
 package appointment
 
-import "time"
+import (
+	"time"
+)
 
 type Appointment struct {
-	ID          int
-	PatientID   int
-	DentistID   int
-	Date        time.Time
-	Description string
+	ID          uint      `gorm:"primaryKey"`
+	PatientID   uint      `gorm:"not null"`
+	DentistID   uint      `gorm:"not null"`
+	Date        time.Time `gorm:"not null;type:datetime(3)"`
+	Description string    `gorm:"type:longtext"`
 }
