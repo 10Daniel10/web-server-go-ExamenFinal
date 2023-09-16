@@ -24,12 +24,12 @@ func (s *Service) Create(patient Patient) (Patient, error) {
 	exists, err := s.repository.GetByDNI(patient.DNI)
 	if err != nil {
 		if err.Error() == "record not found" {
-			return Patient{}, internal.ErrNotFound
+			return Patient{}, internal.ErNotFound
 		}
 	}
 
 	if exists.DNI == patient.DNI {
-		return Patient{}, internal.ErrDuplicate
+		return Patient{}, internal.ErNotFound
 	}
 
 	data, err := s.repository.Create(patient)
@@ -53,7 +53,7 @@ func (s *Service) GetByID(id uint) (Patient, error) {
 	data, err := s.repository.GetByID(id)
 	if err != nil {
 		if err.Error() == "record not found" {
-			return Patient{}, internal.ErrNotFound
+			return Patient{}, internal.ErNotFound
 		}
 	}
 
@@ -64,7 +64,7 @@ func (s *Service) GetByDNI(dni string) (Patient, error) {
 	data, err := s.repository.GetByDNI(dni)
 	if err != nil {
 		if err.Error() == "record not found" {
-			return Patient{}, internal.ErrNotFound
+			return Patient{}, internal.ErNotFound
 		}
 	}
 
