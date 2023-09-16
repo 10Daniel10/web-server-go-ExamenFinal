@@ -7,13 +7,13 @@ import (
 
 var envs = map[string]PublicConfig{
 	"local": {
-		PubKey: "local-key",
+		PubKey: "local_key",
 	},
 	"dev": {
-		PubKey: "dev-key",
+		PubKey: "dev_key",
 	},
 	"prod": {
-		PubKey: "prod-key",
+		PubKey: "prod_key",
 	},
 }
 
