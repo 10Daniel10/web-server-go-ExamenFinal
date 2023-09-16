@@ -2,32 +2,59 @@ package database
 
 import (
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/dentist"
+	"gorm.io/gorm"
 )
 
-type DentistDatabase struct {
+type DentistRepository struct {
+	db *gorm.DB
 }
 
-func (db *DentistDatabase) Create(dentist dentist.Dentist) (dentist.Dentist, error) {
-	//TODO implement me
-	panic("implement me")
+func NewDentistRepository(db *gorm.DB) *DentistRepository {
+	return &DentistRepository{db: db}
 }
 
-func (db *DentistDatabase) GetAll() ([]dentist.Dentist, error) {
-	//TODO implement me
-	panic("implement me")
+func (dr *DentistRepository) Create(dentist dentist.Dentist) (dentist.Dentist, error) {
+	dr.db.Create(&dentist)
+	return dentist, nil
 }
 
-func (db *DentistDatabase) GetByID(id int) (dentist.Dentist, error) {
-	//TODO implement me
-	panic("implement me")
+func (dr *DentistRepository) GetAll() ([]dentist.Dentist, error) {
+	var data []dentist.Dentist
+	query := dr.db.Find(&data)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+	return data, nil
 }
 
-func (db *DentistDatabase) Update(dentist dentist.Dentist) (dentist.Dentist, error) {
-	//TODO implement me
-	panic("implement me")
+func (dr *DentistRepository) GetByID(id uint) (dentist.Dentist, error) {
+	var data dentist.Dentist
+	query := dr.db.First(&data, id)
+	if query.Error != nil {
+		return data, query.Error
+	}
+	return data, nil
 }
 
-func (db *DentistDatabase) Delete(id int) error {
-	//TODO implement me
-	panic("implement me")
+func (dr *DentistRepository) GetByLicense(license string) (dentist.Dentist, error) {
+	var data dentist.Dentist
+	query := dr.db.Where("license = ?", license).First(&data)
+	if query.Error != nil {
+		return data, query.Error
+	}
+	return data, nil
+}
+
+func (dr *DentistRepository) Update(dentist dentist.Dentist) (dentist.Dentist, error) {
+	dr.db.Save(&dentist)
+	return dentist, nil
+}
+
+func (dr *DentistRepository) Delete(id uint) error {
+	var data dentist.Dentist
+	query := dr.db.Delete(&data, id)
+	if query.Error != nil {
+		return query.Error
+	}
+	return nil
 }
