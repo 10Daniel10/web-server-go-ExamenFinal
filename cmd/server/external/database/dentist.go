@@ -1,7 +1,9 @@
 package database
 
 import (
-	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/dentist"
+	"errors"
+	"github.com/10Daniel10/web-server-go-ExamenFinal/internal"
+	model "github.com/10Daniel10/web-server-go-ExamenFinal/internal/dentist"
 	"gorm.io/gorm"
 )
 
@@ -13,46 +15,62 @@ func NewDentistRepository(db *gorm.DB) *DentistRepository {
 	return &DentistRepository{db: db}
 }
 
-func (dr *DentistRepository) Create(dentist dentist.Dentist) (dentist.Dentist, error) {
-	dr.db.Create(&dentist)
+func (d *DentistRepository) Create(dentist model.Dentist) (model.Dentist, error) {
+	query := d.db.Create(&dentist)
+	if query.Error != nil {
+		return model.Dentist{}, query.Error
+	}
 	return dentist, nil
 }
 
-func (dr *DentistRepository) GetAll() ([]dentist.Dentist, error) {
-	var data []dentist.Dentist
-	query := dr.db.Find(&data)
+func (d *DentistRepository) GetAll() ([]model.Dentist, error) {
+	var data []model.Dentist
+	query := d.db.Find(&data)
 	if query.Error != nil {
-		return nil, query.Error
+		return nil, internal.ErServiceUnavailable
 	}
 	return data, nil
 }
 
-func (dr *DentistRepository) GetByID(id uint) (dentist.Dentist, error) {
-	var data dentist.Dentist
-	query := dr.db.First(&data, id)
+func (d *DentistRepository) GetByID(id uint) (model.Dentist, error) {
+	var data model.Dentist
+	query := d.db.First(&data, id)
 	if query.Error != nil {
-		return data, query.Error
+		switch {
+		case errors.Is(query.Error, gorm.ErrRecordNotFound):
+			return model.Dentist{}, internal.ErNotFound
+		}
+		return model.Dentist{}, internal.ErServiceUnavailable
 	}
 	return data, nil
 }
 
-func (dr *DentistRepository) GetByLicense(license string) (dentist.Dentist, error) {
-	var data dentist.Dentist
-	query := dr.db.Where("license = ?", license).First(&data)
+func (d *DentistRepository) GetByLicense(license string) (model.Dentist, error) {
+	var data model.Dentist
+
+	query := d.db.Where("license = ?", license).First(&data)
 	if query.Error != nil {
-		return data, query.Error
+		switch {
+		case errors.Is(query.Error, gorm.ErrRecordNotFound):
+			return data, internal.ErNotFound
+		}
+		return model.Dentist{}, internal.ErServiceUnavailable
 	}
+
 	return data, nil
 }
 
-func (dr *DentistRepository) Update(dentist dentist.Dentist) (dentist.Dentist, error) {
-	dr.db.Save(&dentist)
+func (d *DentistRepository) Update(dentist model.Dentist) (model.Dentist, error) {
+	query := d.db.Save(&dentist)
+	if query.Error != nil {
+		return model.Dentist{}, query.Error
+	}
+	d.db.Save(&dentist)
 	return dentist, nil
 }
 
-func (dr *DentistRepository) Delete(id uint) error {
-	var data dentist.Dentist
-	query := dr.db.Delete(&data, id)
+func (d *DentistRepository) Delete(id uint) error {
+	query := d.db.Delete(&model.Dentist{}, id)
 	if query.Error != nil {
 		return query.Error
 	}

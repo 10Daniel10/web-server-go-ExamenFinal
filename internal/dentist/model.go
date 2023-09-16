@@ -1,6 +1,8 @@
 package dentist
 
-import model "github.com/10Daniel10/web-server-go-ExamenFinal/internal/appointment"
+import (
+	model "github.com/10Daniel10/web-server-go-ExamenFinal/internal/appointment"
+)
 
 type Dentist struct {
 	ID           uint                `gorm:"primaryKey"`
