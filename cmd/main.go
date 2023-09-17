@@ -7,6 +7,7 @@ import (
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/external/database"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/handler"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/middleware"
+	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/appointment"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/dentist"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -71,6 +72,29 @@ func main() {
 		dentistGroup.PUT("/:id", authKeys.Validate, controller.Update)
 		dentistGroup.PATCH("/:id", authKeys.Validate, controller.Patch)
 		dentistGroup.DELETE("/:id", authKeys.Validate, controller.Delete)
+	}
+
+	appointmentGroup := baseGroup.Group("/appointments")
+	{
+		// Initialize and inject dependencies
+		repository := database.NewAppointmentRepository(db)
+		service := appointment.NewService(repository)
+		controller := handler.NewAppointmentHandler(service)
+
+		// Configure routes
+		appointmentGroup.GET("", controller.GetAll)
+		appointmentGroup.GET("/:id", controller.GetById)
+		appointmentGroup.DELETE("/:id", controller.Delete)
+
+		/*
+			appointmentGroup.POST("", controller.Create)
+
+				appointmentGroup.PUT("/:id", controller.UpdateAppointment)
+				appointmentGroup.PATCH("/:id", controller.UpdateAppointmentField)
+
+				appointmentGroup.POST("/by-dni-matricula", controller.AddAppointmentByDNIAndMatricula)
+				appointmentGroup.GET("/by-dni", controller.GetAppointmentByDNI)
+		*/
 	}
 
 	err = router.Run(envConfig.Private.Host)
