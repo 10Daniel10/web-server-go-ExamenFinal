@@ -29,10 +29,10 @@ type AppointmentPut struct {
 }
 
 type AppointmentPatch struct {
-	PatientID   uint      `json:"patient_id" binding:"required"`
-	DentistID   uint      `json:"dentist_id" binding:"required"`
-	Date        time.Time `json:"date" binding:"required"`
-	Description string    `json:"description" binding:"required"`
+	PatientID   uint      `json:"patient_id"`
+	DentistID   uint      `json:"dentist_id"`
+	Date        time.Time `json:"date"`
+	Description string    `json:"description"`
 }
 
 type AppointmentHandler struct {
@@ -162,13 +162,143 @@ func (ah *AppointmentHandler) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, body)
 }
 
-/*
 func (ah *AppointmentHandler) Update(ctx *gin.Context) {
+	fmt.Println("entre al update appointment")
+	idParam := ctx.Param("id")
+	if idParam == "" {
+		ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Status:    http.StatusBadRequest,
+			Message:   "id param is required",
+			Path:      ctx.Request.URL.Path,
+		})
+		return
+	}
+
+	id, err := strconv.ParseUint(idParam, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Status:    http.StatusBadRequest,
+			Message:   "id param must be a number greater than 0",
+			Path:      ctx.Request.URL.Path,
+		})
+		return
+	}
+
+	var updateData AppointmentPut
+	if err := ctx.ShouldBindJSON(&updateData); err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Status:    http.StatusBadRequest,
+			Message:   "invalid body",
+			Path:      ctx.Request.URL.Path,
+			Errors:    []string{err.Error()},
+		})
+		return
+	}
+
+	appointmentToUpdate := appointment.Appointment{
+		ID:          uint(id),
+		PatientID:   updateData.PatientID,
+		DentistID:   updateData.DentistID,
+		Date:        updateData.Date,
+		Description: updateData.Description,
+	}
+
+	data, err := ah.service.Update(appointmentToUpdate)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			ctx.JSON(http.StatusNotFound, ErrorResponse{
+				Timestamp: time.Now().Format(time.RFC3339),
+				Status:    http.StatusNotFound,
+				Message:   fmt.Sprintf("patient with id %d %s", id, err.Error()),
+				Path:      ctx.Request.URL.Path,
+			})
+			return
+		default:
+			ctx.JSON(http.StatusServiceUnavailable, ErrorResponse{
+				Timestamp: time.Now().Format(time.RFC3339),
+				Status:    http.StatusServiceUnavailable,
+				Message:   err.Error(),
+				Path:      ctx.Request.URL.Path,
+			})
+		}
+		return
+	}
+
+	body := AppointmentResponse{
+		Id:          data.ID,
+		PatientID:   data.PatientID,
+		DentistID:   data.DentistID,
+		Date:        data.Date,
+		Description: data.Description,
+	}
+
+	ctx.JSON(http.StatusOK, body)
 }
 
 func (ah *AppointmentHandler) Patch(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	if idParam == "" {
+		ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Status:    http.StatusBadRequest,
+			Message:   "id param is required",
+			Path:      ctx.Request.URL.Path,
+		})
+		return
+	}
+
+	id, err := strconv.ParseUint(idParam, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Status:    http.StatusBadRequest,
+			Message:   "id param must be a number greater than 0",
+			Path:      ctx.Request.URL.Path,
+		})
+		return
+	}
+
+	var patchData AppointmentPatch
+	if err := ctx.ShouldBindJSON(&patchData); err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Status:    http.StatusBadRequest,
+			Message:   "invalid body",
+			Path:      ctx.Request.URL.Path,
+			Errors:    []string{err.Error()},
+		})
+		return
+	}
+
+	partialUpdateData := appointment.Appointment{
+		ID:          uint(id),
+		PatientID:   patchData.PatientID,
+		DentistID:   patchData.DentistID,
+		Date:        patchData.Date,
+		Description: patchData.Description,
+	}
+
+	data, err := ah.service.Patch(partialUpdateData)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, data)
+		return
+	}
+
+	body := AppointmentResponse{
+		Id:          data.ID,
+		PatientID:   data.PatientID,
+		DentistID:   data.DentistID,
+		Date:        data.Date,
+		Description: data.Description,
+	}
+
+	ctx.JSON(http.StatusOK, body)
 }
-*/
+
 func (ah *AppointmentHandler) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {

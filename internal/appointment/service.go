@@ -1,6 +1,7 @@
 package appointment
 
 import (
+	"errors"
 	"time"
 
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal"
@@ -8,7 +9,7 @@ import (
 
 type Repository interface {
 	GetByID(id uint) (Appointment, error)
-	//Update(appointment Appointment) (Appointment, error)
+	Update(appointment Appointment) (Appointment, error)
 	Delete(id uint) error
 	Create(appointment Appointment) (Appointment, error)
 	GetAll() ([]Appointment, error)
@@ -81,11 +82,50 @@ func (s *Service) Create(appointment AppointmentPost) (Appointment, error) {
 	return Appointment{}, nil
 }
 
-/*
-	func (s *Service) Update(appointment Appointment) (Appointment, error) {
-		return s.repository.Update(appointment)
+func (s *Service) Update(appointment Appointment) (Appointment, error) {
+	return s.repository.Update(appointment)
+}
+
+func (s *Service) Patch(appointment Appointment) (Appointment, error) {
+	appointmentSearched, err := s.repository.GetByID(appointment.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return Appointment{}, internal.ErNotFound
+
+		default:
+			return Appointment{}, internal.ErServiceUnavailable
+		}
 	}
-*/
+
+	// Update fields from appointment with the new values, if they are non-zero
+	if appointment.PatientID != 0 {
+		appointmentSearched.PatientID = appointment.PatientID
+	}
+	if appointment.DentistID != 0 {
+		appointmentSearched.DentistID = appointment.DentistID
+	}
+	if !appointment.Date.IsZero() {
+		appointmentSearched.Date = appointment.Date
+	}
+	if appointment.Description != "" {
+		appointmentSearched.Description = appointment.Description
+	}
+
+	appointmentUpdated, err := s.repository.Update(appointmentSearched)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return Appointment{}, internal.ErNotFound
+
+		default:
+			return Appointment{}, internal.ErServiceUnavailable
+		}
+	}
+
+	return appointmentUpdated, nil
+}
+
 func (s *Service) Delete(id uint) error {
 	return s.repository.Delete(id)
 }

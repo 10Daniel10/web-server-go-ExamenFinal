@@ -85,16 +85,11 @@ func main() {
 		appointmentGroup.GET("", controller.GetAll)
 		appointmentGroup.GET("/:id", controller.GetById)
 		appointmentGroup.DELETE("/:id", controller.Delete)
+		//appointmentGroup.POST("", controller.Create)
+		appointmentGroup.PUT("/:id", controller.Update)
+		appointmentGroup.PATCH("/:id", controller.Patch)
+		//appointmentGroup.GET("/by-dni", controller.GetAppointmentByDNI)
 
-		/*
-			appointmentGroup.POST("", controller.Create)
-
-				appointmentGroup.PUT("/:id", controller.UpdateAppointment)
-				appointmentGroup.PATCH("/:id", controller.UpdateAppointmentField)
-
-				appointmentGroup.POST("/by-dni-matricula", controller.AddAppointmentByDNIAndMatricula)
-				appointmentGroup.GET("/by-dni", controller.GetAppointmentByDNI)
-		*/
 	}
 
 	err = router.Run(envConfig.Private.Host)
