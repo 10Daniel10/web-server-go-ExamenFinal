@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/config"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/external/database"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/handler"
+	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/middleware"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/dentist"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -47,6 +49,9 @@ func main() {
 		})
 	}
 
+	//Auth middleware
+	authKeys := middleware.NewAuthKeys(envConfig.Private.SecretKey, envConfig.Public.PubKey)
+
 	_ = baseGroup.Group("/docs")
 	{
 	}
@@ -62,10 +67,10 @@ func main() {
 		dentistGroup.GET("", controller.GetAll)
 		dentistGroup.GET("/q", controller.GetByLicense)
 		dentistGroup.GET("/:id", controller.GetById)
-		dentistGroup.POST("", controller.Create)
-		dentistGroup.PUT("/:id", controller.Update)
-		dentistGroup.PATCH("/:id", controller.Patch)
-		dentistGroup.DELETE("/:id", controller.Delete)
+		dentistGroup.POST("", authKeys.Validate, controller.Create)
+		dentistGroup.PUT("/:id", authKeys.Validate, controller.Update)
+		dentistGroup.PATCH("/:id", authKeys.Validate, controller.Patch)
+		dentistGroup.DELETE("/:id", authKeys.Validate, controller.Delete)
 	}
 
 	err = router.Run(envConfig.Private.Host)
