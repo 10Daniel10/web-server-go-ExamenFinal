@@ -11,4 +11,8 @@ var (
 	/* Dentist errors */
 
 	ErLicenseAlreadyExists = errors.New("license already exists")
+
+	/* Patient errors */
+
+	ErDniAlreadyExists = errors.New("dni already exists")
 )
