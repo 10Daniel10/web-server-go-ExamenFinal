@@ -40,6 +40,16 @@ func main() {
 	}
 
 	router := config.SetupRouter()
+	{
+		// Define global behavior
+		router.NoRoute(func(c *gin.Context) {
+			c.JSON(http.StatusNotFound, gin.H{"message": "Not found"})
+		})
+
+		router.NoMethod(func(c *gin.Context) {
+			c.JSON(http.StatusMethodNotAllowed, gin.H{"message": "Method not allowed"})
+		})
+	}
 	baseGroup := router.Group(envConfig.Private.BasePath)
 	{
 		baseGroup.GET("/ping", func(c *gin.Context) {
@@ -70,7 +80,7 @@ func main() {
 		dentistGroup.DELETE("/:id", controller.Delete)
 	}
 
-	patientGroup := baseGroup.Group("/patient")
+	patientGroup := baseGroup.Group("/patients")
 	{
 		// Initialize and inject dependencies
 		repository := database.NewPatientRepository(db)
