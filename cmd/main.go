@@ -24,20 +24,20 @@ import (
 //	@description	API of Dental Clinic
 //	@termsOfService	http://swagger.io/terms/
 
-// @tag.name	Patient
-// @tag.description Patient operations for managing Patient
-// @tag.docs.url http://swagger.io/terms/
-// @tag.docs.description Patient operations for managing Patient
+//	@tag.name				Patient
+//	@tag.description		Patient operations for managing Patient
+//	@tag.docs.url			http://swagger.io/terms/
+//	@tag.docs.description	Patient operations for managing Patient
 
-// @tag.name	Dentist
-// @tag.description Dentist operations for managing Dentist
-// @tag.docs.url http://swagger.io/terms/
-// @tag.docs.description Dentist operations for managing Dentist
+//	@tag.name				Dentist
+//	@tag.description		Dentist operations for managing Dentist
+//	@tag.docs.url			http://swagger.io/terms/
+//	@tag.docs.description	Dentist operations for managing Dentist
 
-// @tag.name	Appointment
-// @tag.description Appointment operations for managing Appointment
-// @tag.docs.url http://swagger.io/terms/
-// @tag.docs.description Appointment operations for managing Appointment
+//	@tag.name				Appointment
+//	@tag.description		Appointment operations for managing Appointment
+//	@tag.docs.url			http://swagger.io/terms/
+//	@tag.docs.description	Appointment operations for managing Appointment
 
 //	@accept		json
 //	@produce	json
@@ -56,8 +56,8 @@ import (
 //	@name						SECRET_KEY
 //	@description				Add secret key here
 
-// @externalDocs.description	OpenAPI
-// @externalDocs.url			https://swagger.io/resources/open-api/
+//	@externalDocs.description	OpenAPI
+//	@externalDocs.url			https://swagger.io/resources/open-api/
 
 func main() {
 	var err error
