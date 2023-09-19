@@ -132,7 +132,7 @@ func (p *PatientHandler) GetById(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("patient with id %d not found", id),
+				Message:   fmt.Sprintf("patientService with id %d not found", id),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
@@ -173,7 +173,7 @@ func (p *PatientHandler) GetByDNI(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("patient with dni %s not found", dniQuery),
+				Message:   fmt.Sprintf("patientService with dni %s not found", dniQuery),
 				Path:      ctx.Request.URL.Path,
 			})
 
@@ -361,7 +361,7 @@ func (p *PatientHandler) Update(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("patient with id %d not found", id),
+				Message:   fmt.Sprintf("patientService with id %d not found", id),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
@@ -475,7 +475,7 @@ func (p *PatientHandler) Patch(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("patient with id %d not found", id),
+				Message:   fmt.Sprintf("patientService with id %d not found", id),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
@@ -541,7 +541,7 @@ func (p *PatientHandler) Delete(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("patient with id %d not found", id),
+				Message:   fmt.Sprintf("patientService with id %d not found", id),
 				Path:      ctx.Request.URL.Path,
 			})
 			return

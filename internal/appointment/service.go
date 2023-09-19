@@ -2,24 +2,16 @@ package appointment
 
 import (
 	"errors"
-	"time"
-
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal"
 )
 
 type Repository interface {
+	GetAll() ([]Appointment, error)
 	GetByID(id uint) (Appointment, error)
+	GetByDNI(dni string) (Appointment, error)
+	Create(appointment Appointment) (Appointment, error)
 	Update(appointment Appointment) (Appointment, error)
 	Delete(id uint) error
-	Create(appointment Appointment) (Appointment, error)
-	GetAll() ([]Appointment, error)
-}
-
-type AppointmentPost struct {
-	PatientDNI     uint      `json:"patient_dni" binding:"required"`
-	DentistLicense uint      `json:"dentist_license" binding:"required"`
-	Date           time.Time `json:"date" binding:"required"`
-	Description    string    `json:"description" binding:"required"`
 }
 
 type Service struct {
@@ -41,53 +33,28 @@ func (s *Service) GetAll() ([]Appointment, error) {
 func (s *Service) GetByID(id uint) (Appointment, error) {
 	data, err := s.repository.GetByID(id)
 	if err != nil {
-		if err.Error() == "record not found" {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
 			return Appointment{}, internal.ErNotFound
+
+		default:
+			return Appointment{}, internal.ErServiceUnavailable
 		}
 	}
 	return data, nil
 }
 
-func (s *Service) Create(appointment AppointmentPost) (Appointment, error) {
-	//TODO:
-	/*
-		dentist, err := s.dentistService.GetByLicense(dentistLicense)
-		if err != nil {
-			if err.Error() == "record not found" {
-				return Appointment{}, internal.ErNotFound
-			}
-		}
-
-		patient, err := s.patientService.GetByDNI(patientDNI)
-		if err != nil {
-			if err.Error() == "record not found" {
-				return Appointment{}, internal.ErNotFound
-			}
-		}
-
-		appointmentToCreate := Appointment{
-			PatientID:   patient.ID,
-			DentistID:   dentist.ID,
-			Date:        appointment.Date,
-			Description: appointment.Description,
-		}
-
-		data, err := s.repository.Create(appointmentToCreate)
-		if err != nil {
-			return Appointment{}, err
-		}
-
-		return data, nil
-	*/
-	return Appointment{}, nil
+func (s *Service) GetByDNI(dni string) (Appointment, error) {
+	data, err := s.repository.GetByDNI(dni)
+	if err != nil {
+		return Appointment{}, err
+	}
+	return data, nil
 }
 
-func (s *Service) Update(appointment Appointment) (Appointment, error) {
-	return s.repository.Update(appointment)
-}
+func (s *Service) Create(appointment Appointment) (Appointment, error) {
 
-func (s *Service) Patch(appointment Appointment) (Appointment, error) {
-	appointmentSearched, err := s.repository.GetByID(appointment.ID)
+	appointmentCreated, err := s.repository.Create(appointment)
 	if err != nil {
 		switch {
 		case errors.Is(err, internal.ErNotFound):
@@ -98,18 +65,19 @@ func (s *Service) Patch(appointment Appointment) (Appointment, error) {
 		}
 	}
 
-	// Update fields from appointment with the new values, if they are non-zero
-	if appointment.PatientID != 0 {
-		appointmentSearched.PatientID = appointment.PatientID
-	}
-	if appointment.DentistID != 0 {
-		appointmentSearched.DentistID = appointment.DentistID
-	}
-	if !appointment.Date.IsZero() {
-		appointmentSearched.Date = appointment.Date
-	}
-	if appointment.Description != "" {
-		appointmentSearched.Description = appointment.Description
+	return appointmentCreated, nil
+}
+
+func (s *Service) Update(appointment Appointment) (Appointment, error) {
+	appointmentSearched, err := s.repository.GetByID(appointment.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return Appointment{}, internal.ErNotFound
+
+		default:
+			return Appointment{}, internal.ErServiceUnavailable
+		}
 	}
 
 	appointmentUpdated, err := s.repository.Update(appointmentSearched)
@@ -126,6 +94,75 @@ func (s *Service) Patch(appointment Appointment) (Appointment, error) {
 	return appointmentUpdated, nil
 }
 
+func (s *Service) Patch(appointment Appointment) (Appointment, error) {
+
+	appointmentSearched, err := s.repository.GetByID(appointment.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return Appointment{}, internal.ErNotFound
+
+		default:
+			return Appointment{}, internal.ErServiceUnavailable
+		}
+	}
+
+	CompareTo(&appointment, appointmentSearched)
+
+	appointmentUpdated, err := s.repository.Update(appointmentSearched)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return Appointment{}, internal.ErNotFound
+
+		default:
+			return Appointment{}, internal.ErServiceUnavailable
+		}
+	}
+
+	return appointmentUpdated, nil
+}
+
 func (s *Service) Delete(id uint) error {
-	return s.repository.Delete(id)
+	_, err := s.repository.GetByID(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return internal.ErNotFound
+
+		default:
+			return internal.ErServiceUnavailable
+		}
+	}
+
+	err = s.repository.Delete(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, internal.ErNotFound):
+			return internal.ErNotFound
+
+		default:
+			return internal.ErServiceUnavailable
+		}
+	}
+
+	return nil
+}
+
+// Custom functions for the service
+// Normalize and CompareTo are used to avoid empty fields in the database
+
+func CompareTo(a *Appointment, b Appointment) {
+	if a.PatientID == 0 {
+		a.PatientID = b.PatientID
+	}
+	if a.DentistID == 0 {
+		a.DentistID = b.DentistID
+	}
+	if a.Date.IsZero() {
+		a.Date = b.Date
+	}
+	if a.Description == "" {
+		a.Description = b.Description
+	}
 }

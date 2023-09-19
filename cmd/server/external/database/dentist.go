@@ -65,7 +65,6 @@ func (d *DentistRepository) Update(dentist model.Dentist) (model.Dentist, error)
 	if query.Error != nil {
 		return model.Dentist{}, query.Error
 	}
-	d.db.Save(&dentist)
 	return dentist, nil
 }
 
