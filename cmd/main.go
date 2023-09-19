@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/appointment"
 	"net/http"
 
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/config"
@@ -41,6 +42,22 @@ func main() {
 		return
 	}
 
+	// Initialize and inject dependencies
+	// Dentists
+	dentistRepository := database.NewDentistRepository(db)
+	dentistService := dentist.NewService(dentistRepository)
+	dentistController := handler.NewDentistHandler(dentistService)
+
+	// Patients
+	patientRepository := database.NewPatientRepository(db)
+	patientService := patient.NewService(patientRepository)
+	patientController := handler.NewPatientHandler(patientService)
+
+	// Appointments
+	appointmentRepository := database.NewOtherAppointmentRepository(db)
+	appointmentService := appointment.NewService(appointmentRepository)
+	appointmentController := handler.NewAppointmentHandler(appointmentService, patientService, dentistService)
+
 	router := config.SetupRouter()
 	{
 		// Define global behavior
@@ -70,36 +87,39 @@ func main() {
 
 	dentistGroup := baseGroup.Group("/dentists")
 	{
-		// Initialize and inject dependencies
-		repository := database.NewDentistRepository(db)
-		service := dentist.NewService(repository)
-		controller := handler.NewDentistHandler(service)
-
 		// Configure routes
-		dentistGroup.GET("", controller.GetAll)
-		dentistGroup.GET("/q", controller.GetByLicense)
-		dentistGroup.GET("/:id", controller.GetById)
-		dentistGroup.POST("", authKeys.Validate, controller.Create)
-		dentistGroup.PUT("/:id", authKeys.Validate, controller.Update)
-		dentistGroup.PATCH("/:id", authKeys.Validate, controller.Patch)
-		dentistGroup.DELETE("/:id", authKeys.Validate, controller.Delete)
+		dentistGroup.GET("", dentistController.GetAll)
+		dentistGroup.GET("/q", dentistController.GetByLicense)
+		dentistGroup.GET("/:id", dentistController.GetById)
+		dentistGroup.POST("", authKeys.Validate, dentistController.Create)
+		dentistGroup.PUT("/:id", authKeys.Validate, dentistController.Update)
+		dentistGroup.PATCH("/:id", authKeys.Validate, dentistController.Patch)
+		dentistGroup.DELETE("/:id", authKeys.Validate, dentistController.Delete)
 	}
 
 	patientGroup := baseGroup.Group("/patients")
 	{
-		// Initialize and inject dependencies
-		repository := database.NewPatientRepository(db)
-		service := patient.NewService(repository)
-		controller := handler.NewPatientHandler(service)
-
 		// Configure routes
-		patientGroup.GET("", controller.GetAll)
-		patientGroup.GET("/q", controller.GetByDNI)
-		patientGroup.GET("/:id", controller.GetById)
-		patientGroup.POST("", controller.Create)
-		patientGroup.PUT("/:id", controller.Update)
-		patientGroup.PATCH("/:id", controller.Patch)
-		patientGroup.DELETE("/:id", controller.Delete)
+		patientGroup.GET("", patientController.GetAll)
+		patientGroup.GET("/q", patientController.GetByDNI)
+		patientGroup.GET("/:id", patientController.GetById)
+		patientGroup.POST("", patientController.Create)
+		patientGroup.PUT("/:id", patientController.Update)
+		patientGroup.PATCH("/:id", patientController.Patch)
+		patientGroup.DELETE("/:id", patientController.Delete)
+	}
+
+	appointmentGroup := baseGroup.Group("/appointments")
+	{
+		// Configure routes
+		appointmentGroup.GET("", appointmentController.GetAll)
+		appointmentGroup.GET("/:id", appointmentController.GetById)
+		appointmentGroup.GET("/q", appointmentController.GetByDNI)
+		appointmentGroup.POST("", appointmentController.Create)
+		appointmentGroup.PUT("/:id", appointmentController.Update)
+		appointmentGroup.PATCH("/:id", appointmentController.Patch)
+		appointmentGroup.DELETE("/:id", appointmentController.Delete)
+
 	}
 
 	err = router.Run(envConfig.Private.Host)

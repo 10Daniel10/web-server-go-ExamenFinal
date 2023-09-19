@@ -14,7 +14,7 @@ import (
 
 type DentistResponse struct {
 	Id       uint   `json:"id"`
-	LastName string `json:"last_name"`
+	Lastname string `json:"last_name"`
 	Name     string `json:"name"`
 	License  string `json:"license"`
 }
@@ -79,7 +79,7 @@ func (d *DentistHandler) GetAll(ctx *gin.Context) {
 	for _, currentDentist := range dentists {
 		body = append(body, DentistResponse{
 			Id:       currentDentist.ID,
-			LastName: currentDentist.Lastname,
+			Lastname: currentDentist.Lastname,
 			Name:     currentDentist.Name,
 			License:  currentDentist.License,
 		})
@@ -118,7 +118,7 @@ func (d *DentistHandler) GetById(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("dentist with id %d %s", id, err.Error()),
+				Message:   fmt.Sprintf("dentistService with id %d %s", id, err.Error()),
 				Path:      ctx.Request.URL.Path,
 			})
 
@@ -135,7 +135,7 @@ func (d *DentistHandler) GetById(ctx *gin.Context) {
 
 	body := DentistResponse{
 		Id:       dentistSearched.ID,
-		LastName: dentistSearched.Lastname,
+		Lastname: dentistSearched.Lastname,
 		Name:     dentistSearched.Name,
 		License:  dentistSearched.License,
 	}
@@ -162,7 +162,7 @@ func (d *DentistHandler) GetByLicense(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("dentist with license %s %s", licenseQuery, err.Error()),
+				Message:   fmt.Sprintf("dentistService with license %s %s", licenseQuery, err.Error()),
 				Path:      ctx.Request.URL.Path,
 			})
 
@@ -179,7 +179,7 @@ func (d *DentistHandler) GetByLicense(ctx *gin.Context) {
 
 	body := DentistResponse{
 		Id:       dentistSearched.ID,
-		LastName: dentistSearched.Lastname,
+		Lastname: dentistSearched.Lastname,
 		Name:     dentistSearched.Name,
 		License:  dentistSearched.License,
 	}
@@ -221,7 +221,7 @@ func (d *DentistHandler) Create(ctx *gin.Context) {
 			ctx.JSON(http.StatusConflict, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusConflict,
-				Message:   fmt.Sprintf("dentist with license %s already exists", dentistToCreate.License),
+				Message:   fmt.Sprintf("dentistService with license %s already exists", dentistToCreate.License),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
@@ -238,7 +238,7 @@ func (d *DentistHandler) Create(ctx *gin.Context) {
 
 	body := DentistResponse{
 		Id:       dentistCreated.ID,
-		LastName: dentistCreated.Lastname,
+		Lastname: dentistCreated.Lastname,
 		Name:     dentistCreated.Name,
 		License:  dentistCreated.License,
 	}
@@ -303,7 +303,7 @@ func (d *DentistHandler) Update(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("dentist with id %d %s", id, err.Error()),
+				Message:   fmt.Sprintf("dentistService with id %d %s", id, err.Error()),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
@@ -311,7 +311,7 @@ func (d *DentistHandler) Update(ctx *gin.Context) {
 			ctx.JSON(http.StatusConflict, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusConflict,
-				Message:   fmt.Sprintf("dentist with license %s already exists", dentistToUpdate.License),
+				Message:   fmt.Sprintf("dentistService with license %s already exists", dentistToUpdate.License),
 				Path:      ctx.Request.URL.Path,
 			})
 		default:
@@ -327,7 +327,7 @@ func (d *DentistHandler) Update(ctx *gin.Context) {
 
 	body := DentistResponse{
 		Id:       dentistUpdated.ID,
-		LastName: dentistUpdated.Lastname,
+		Lastname: dentistUpdated.Lastname,
 		Name:     dentistUpdated.Name,
 		License:  dentistUpdated.License,
 	}
@@ -378,7 +378,7 @@ func (d *DentistHandler) Patch(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("dentist with id %d %s", id, err.Error()),
+				Message:   fmt.Sprintf("dentistService with id %d %s", id, err.Error()),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
@@ -386,7 +386,7 @@ func (d *DentistHandler) Patch(ctx *gin.Context) {
 			ctx.JSON(http.StatusConflict, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusConflict,
-				Message:   fmt.Sprintf("dentist with license %s already exists", dentistToUpdate.License),
+				Message:   fmt.Sprintf("dentistService with license %s already exists", dentistToUpdate.License),
 				Path:      ctx.Request.URL.Path,
 			})
 		default:
@@ -402,7 +402,7 @@ func (d *DentistHandler) Patch(ctx *gin.Context) {
 
 	body := DentistResponse{
 		Id:       dentistUpdated.ID,
-		LastName: dentistUpdated.Lastname,
+		Lastname: dentistUpdated.Lastname,
 		Name:     dentistUpdated.Name,
 		License:  dentistUpdated.License,
 	}
@@ -440,7 +440,7 @@ func (d *DentistHandler) Delete(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, ErrorResponse{
 				Timestamp: time.Now().Format(time.RFC3339),
 				Status:    http.StatusNotFound,
-				Message:   fmt.Sprintf("dentist with id %d %s", id, err.Error()),
+				Message:   fmt.Sprintf("dentistService with id %d %s", id, err.Error()),
 				Path:      ctx.Request.URL.Path,
 			})
 			return
