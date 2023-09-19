@@ -3,15 +3,17 @@ package handler
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/patient"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"net/http"
-	"strconv"
-	"time"
 )
 
+// PatientResponse model for, response a Patient
 type PatientResponse struct {
 	Id            uint      `json:"id"`
 	Name          string    `json:"name"`
@@ -20,8 +22,9 @@ type PatientResponse struct {
 	DNI           string    `json:"dni"`
 	Email         string    `json:"email"`
 	AdmissionDate time.Time `json:"admission_date"`
-}
+} //	@name	PatientResponse
 
+// PatientPost model for creating a Patient
 type PatientPost struct {
 	Name          string `json:"name" binding:"required"`
 	LastName      string `json:"last_name" binding:"required"`
@@ -29,8 +32,9 @@ type PatientPost struct {
 	DNI           string `json:"dni" binding:"required"`
 	Email         string `json:"email" binding:"required"`
 	AdmissionDate string `json:"admission_date" binding:"required"`
-}
+} //	@name	PatientPost
 
+// PatientPut model for updating a Patient
 type PatientPut struct {
 	Name          string `json:"name" binding:"required"`
 	LastName      string `json:"last_name" binding:"required"`
@@ -38,8 +42,9 @@ type PatientPut struct {
 	DNI           string `json:"dni" binding:"required"`
 	Email         string `json:"email" binding:"required"`
 	AdmissionDate string `json:"admission_date" binding:"required"`
-}
+} //	@name	PatientPut
 
+// PatientPatch model for updating a Patient
 type PatientPatch struct {
 	Name          string `json:"name"`
 	LastName      string `json:"last_name"`
@@ -47,7 +52,7 @@ type PatientPatch struct {
 	DNI           string `json:"dni"`
 	Email         string `json:"email"`
 	AdmissionDate string `json:"admission_date"`
-}
+} //	@name	PatientPatch
 
 type PatientService interface {
 	GetAll() ([]patient.Patient, error)
@@ -67,6 +72,13 @@ func NewPatientHandler(service PatientService) *PatientHandler {
 	return &PatientHandler{service: service}
 }
 
+// GetAll function to get all Patients
+//
+//	@Summary		Get all Patients
+//	@Description	Get all Patients
+//	@Tags			Patients
+//	@Success		200	{array}	PatientResponse
+//	@Router			/Patients [get]
 func (p *PatientHandler) GetAll(ctx *gin.Context) {
 	patients, err := p.service.GetAll()
 	if err != nil {
@@ -103,6 +115,16 @@ func (p *PatientHandler) GetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// GetByID function to get Patient by id
+//
+//	@Summary		Get Patient by id
+//	@Description	Get Patient by id
+//	@Tags			Patients
+//	@Param			id	path		int	true	"PatientResponse ID"
+//	@Success		200	{object}	PatientResponse
+//	@Failure		400	{object}	Error
+//	@Failure		404	{object}	Error
+//	@Router			/Patients/{id} [get]
 func (p *PatientHandler) GetById(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -154,6 +176,16 @@ func (p *PatientHandler) GetById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// GetByID function to get Patient by DNI
+//
+//	@Summary		Get Patient by DNI
+//	@Description	Get Patient by DNI
+//	@Tags			Patients
+//	@Param			id	path		int	true	"PatientResponse DNI"
+//	@Success		200	{object}	PatientResponse
+//	@Failure		400	{object}	Error
+//	@Failure		404	{object}	Error
+//	@Router			/Patients/{id} [get]
 func (p *PatientHandler) GetByDNI(ctx *gin.Context) {
 	dniQuery := ctx.Query("dni")
 	if dniQuery == "" {
@@ -201,6 +233,16 @@ func (p *PatientHandler) GetByDNI(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// Create function to create a Patient
+//
+//	@Summary		Create a Patient
+//	@Description	Create a Patient
+//	@Tags			Patients
+//	@security		Bearer
+//	@Param			Patient	body		PatientPost	true	"PatientResponse"
+//	@Success		201		{object}	PatientResponse
+//	@Failure		400		{object}	Error
+//	@Router			/Patients [post]
 func (p *PatientHandler) Create(ctx *gin.Context) {
 	patientToPost := PatientPost{}
 	err := ctx.ShouldBindJSON(&patientToPost)
@@ -285,6 +327,17 @@ func (p *PatientHandler) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, body)
 }
 
+// Update function to update a Patient
+//
+//	@Summary		Update a Patient
+//	@Description	Update a Patient
+//	@Tags			Patients
+//	@Param			id		path		int			true	"PatientResponse ID"
+//	@Param			Patient	body		PatientPut	true	"PatientResponse"
+//	@Success		200		{object}	PatientResponse
+//	@Failure		400		{object}	Error
+//	@Failure		404		{object}	Error
+//	@Router			/Patients/{id} [put]
 func (p *PatientHandler) Update(ctx *gin.Context) {
 	var err error
 	idParam := ctx.Param("id")
@@ -397,6 +450,17 @@ func (p *PatientHandler) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// Patch function to patch a Patient
+//
+//	@Summary		Patch a Patient
+//	@Description	Patch a Patient
+//	@Tags			Patients
+//	@Param			id		path		int				true	"PatientResponse ID"
+//	@Param			Patient	body		PatientPatch	true	"PatientResponse"
+//	@Success		200		{object}	PatientResponse
+//	@Failure		400		{object}	Error
+//	@Failure		404		{object}	Error
+//	@Router			/Patients/{id} [patch]
 func (p *PatientHandler) Patch(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -511,6 +575,16 @@ func (p *PatientHandler) Patch(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// Delete function to delete a Patient
+//
+//	@Summary		Delete a Patient
+//	@Description	Delete a Patient
+//	@Tags			Patients
+//	@Param			id	path		int	true	"PatientResponse ID"
+//	@Success		204	{object}	PatientResponse
+//	@Failure		400	{object}	Error
+//	@Failure		404	{object}	Error
+//	@Router			/Patients/{id} [delete]
 func (p *PatientHandler) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {

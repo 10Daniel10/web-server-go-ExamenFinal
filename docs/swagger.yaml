@@ -1,0 +1,421 @@
+consumes:
+- application/json
+definitions:
+  DentistPatch:
+    properties:
+      last_name:
+        type: string
+      license:
+        type: string
+      name:
+        type: string
+    type: object
+  DentistPost:
+    properties:
+      last_name:
+        type: string
+      license:
+        type: string
+      name:
+        type: string
+    required:
+    - last_name
+    - license
+    - name
+    type: object
+  DentistResponse:
+    properties:
+      id:
+        type: integer
+      last_name:
+        type: string
+      license:
+        type: string
+      name:
+        type: string
+    type: object
+  Error:
+    properties:
+      errors:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      path:
+        type: string
+      status:
+        type: integer
+      timestamp:
+        type: string
+    type: object
+  PatientPatch:
+    properties:
+      address:
+        type: string
+      admission_date:
+        type: string
+      dni:
+        type: string
+      email:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+    type: object
+  PatientPost:
+    properties:
+      address:
+        type: string
+      admission_date:
+        type: string
+      dni:
+        type: string
+      email:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+    required:
+    - address
+    - admission_date
+    - dni
+    - email
+    - last_name
+    - name
+    type: object
+  PatientPut:
+    properties:
+      address:
+        type: string
+      admission_date:
+        type: string
+      dni:
+        type: string
+      email:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+    required:
+    - address
+    - admission_date
+    - dni
+    - email
+    - last_name
+    - name
+    type: object
+  PatientResponse:
+    properties:
+      address:
+        type: string
+      admission_date:
+        type: string
+      dni:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      name:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+info:
+  contact:
+    email: gabriela.calicanton@gmail.com
+    name: Gabriela Cecilia Calicanton
+    url: http://www.swagger.io/support
+  description: API of Dental Clinic
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Dental Clinic API
+  version: "2.0"
+paths:
+  /Dentists:
+    get:
+      description: Get all Dentists
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/DentistResponse'
+            type: array
+      summary: Get all Dentists
+      tags:
+      - Dentists
+    post:
+      description: Create a Dentist
+      parameters:
+      - description: DentistResponse
+        in: body
+        name: Dentist
+        required: true
+        schema:
+          $ref: '#/definitions/DentistPost'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/DentistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - Bearer: []
+      summary: Create a Dentist
+      tags:
+      - Dentists
+  /Dentists/{id}:
+    delete:
+      description: Delete a Dentist
+      parameters:
+      - description: DentistResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/DentistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Delete a Dentist
+      tags:
+      - Dentists
+    get:
+      description: Get Dentist by License
+      parameters:
+      - description: DentistResponse License
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DentistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Get Dentist by License
+      tags:
+      - Dentists
+    patch:
+      description: Patch a Dentist
+      parameters:
+      - description: DentistResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: DentistResponse
+        in: body
+        name: Dentist
+        required: true
+        schema:
+          $ref: '#/definitions/DentistPatch'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DentistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Patch a Dentist
+      tags:
+      - Dentists
+  /Patients:
+    get:
+      description: Get all Patients
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/PatientResponse'
+            type: array
+      summary: Get all Patients
+      tags:
+      - Patients
+    post:
+      description: Create a Patient
+      parameters:
+      - description: PatientResponse
+        in: body
+        name: Patient
+        required: true
+        schema:
+          $ref: '#/definitions/PatientPost'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/PatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+      - Bearer: []
+      summary: Create a Patient
+      tags:
+      - Patients
+  /Patients/{id}:
+    delete:
+      description: Delete a Patient
+      parameters:
+      - description: PatientResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/PatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Delete a Patient
+      tags:
+      - Patients
+    get:
+      description: Get Patient by DNI
+      parameters:
+      - description: PatientResponse DNI
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Get Patient by DNI
+      tags:
+      - Patients
+    patch:
+      description: Patch a Patient
+      parameters:
+      - description: PatientResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatientResponse
+        in: body
+        name: Patient
+        required: true
+        schema:
+          $ref: '#/definitions/PatientPatch'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Patch a Patient
+      tags:
+      - Patients
+    put:
+      description: Update a Patient
+      parameters:
+      - description: PatientResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatientResponse
+        in: body
+        name: Patient
+        required: true
+        schema:
+          $ref: '#/definitions/PatientPut'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Update a Patient
+      tags:
+      - Patients
+produces:
+- application/json
+schemes:
+- http
+- https
+securityDefinitions:
+  Bearer:
+    description: 'Add Bearer token here, like this: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: Patient operations for managing Patient
+  externalDocs:
+    description: Patient operations for managing Patient
+    url: http://swagger.io/terms/
+  name: Patient

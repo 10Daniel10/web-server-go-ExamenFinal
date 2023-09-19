@@ -6,7 +6,7 @@ type ErrorResponse struct {
 	Message   string   `json:"message"`
 	Path      string   `json:"path"`
 	Errors    []string `json:"errors,omitempty"`
-}
+} // @name Error
 
 type PageResponse struct {
 	Page     int         `json:"page"`
