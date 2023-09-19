@@ -79,6 +79,19 @@ definitions:
     - license
     - name
     type: object
+  DentistPut:
+    properties:
+      last_name:
+        type: string
+      license:
+        type: string
+      name:
+        type: string
+    required:
+    - last_name
+    - license
+    - name
+    type: object
   DentistResponse:
     properties:
       id:
@@ -90,7 +103,7 @@ definitions:
       name:
         type: string
     type: object
-  Error:
+  ErrorResponse:
     properties:
       errors:
         items:
@@ -197,7 +210,7 @@ info:
   title: Dental Clinic API
   version: "2.0"
 paths:
-  /Appointments:
+  /appointments:
     get:
       description: Get all Appointments
       responses:
@@ -207,12 +220,21 @@ paths:
             items:
               $ref: '#/definitions/AppointmentResponse'
             type: array
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       summary: Get all Appointments
       tags:
-      - Appointments
+      - Appointment
     post:
       description: Create a Appointment
       parameters:
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
       - description: AppointmentResponse
         in: body
         name: Appointment
@@ -227,41 +249,56 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       security:
-      - Bearer: []
+      - APIKey: []
       summary: Create a Appointment
       tags:
-      - Appointments
-  /Appointments/{id}:
+      - Appointment
+  /appointments/{id}:
     delete:
       description: Delete a Appointment
       parameters:
-      - description: AppointmentResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Appointment ID
         in: path
         name: id
         required: true
         type: integer
       responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/AppointmentResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Delete a Appointment
       tags:
-      - Appointments
+      - Appointment
     get:
-      description: Get Appointment by DNI
+      description: Get Appointment by id
       parameters:
-      - description: AppointmentResponse DNI
+      - description: Appointment ID
         in: path
         name: id
         required: true
@@ -274,18 +311,27 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
-      summary: Get Appointment by DNI
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get Appointment by id
       tags:
-      - Appointments
+      - Appointment
     patch:
       description: Patch a Appointment
       parameters:
-      - description: AppointmentResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Appointment ID
         in: path
         name: id
         required: true
@@ -304,18 +350,33 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Patch a Appointment
       tags:
-      - Appointments
+      - Appointment
     put:
       description: Update a Appointment
       parameters:
-      - description: AppointmentResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Appointment ID
         in: path
         name: id
         required: true
@@ -334,15 +395,54 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Update a Appointment
       tags:
-      - Appointments
-  /Dentists:
+      - Appointment
+  /appointments/q:
+    get:
+      description: Get Appointment by DNI
+      parameters:
+      - description: Patient DNI
+        in: query
+        name: dni
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/AppointmentResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get Appointment by DNI
+      tags:
+      - Appointment
+  /dentists:
     get:
       description: Get all Dentists
       responses:
@@ -352,15 +452,24 @@ paths:
             items:
               $ref: '#/definitions/DentistResponse'
             type: array
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       summary: Get all Dentists
       tags:
-      - Dentists
+      - Dentist
     post:
       description: Create a Dentist
       parameters:
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
       - description: DentistResponse
         in: body
-        name: Dentist
+        name: Body
         required: true
         schema:
           $ref: '#/definitions/DentistPost'
@@ -372,41 +481,56 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       security:
-      - Bearer: []
+      - APIKey: []
       summary: Create a Dentist
       tags:
-      - Dentists
-  /Dentists/{id}:
+      - Dentist
+  /dentists/{id}:
     delete:
       description: Delete a Dentist
       parameters:
-      - description: DentistResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Dentist ID
         in: path
         name: id
         required: true
         type: integer
       responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/DentistResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Delete a Dentist
       tags:
-      - Dentists
+      - Dentist
     get:
-      description: Get Dentist by License
+      description: Get Dentist by id
       parameters:
-      - description: DentistResponse License
+      - description: Dentist ID
         in: path
         name: id
         required: true
@@ -419,22 +543,26 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
-      summary: Get Dentist by License
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get Dentist by id
       tags:
-      - Dentists
+      - Dentist
     patch:
       description: Patch a Dentist
       parameters:
-      - description: DentistResponse ID
-        in: path
-        name: id
+      - description: Public Key
+        in: header
+        name: PUB_KEY
         required: true
-        type: integer
+        type: string
       - description: DentistResponse
         in: body
         name: Dentist
@@ -449,15 +577,90 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Patch a Dentist
       tags:
-      - Dentists
-  /Patients:
+      - Dentist
+    put:
+      description: Update a Dentist
+      parameters:
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: DentistResponse
+        in: body
+        name: Dentist
+        required: true
+        schema:
+          $ref: '#/definitions/DentistPut'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DentistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
+      summary: Update a Dentist
+      tags:
+      - Dentist
+  /dentists/q:
+    get:
+      description: Get Dentist by License
+      parameters:
+      - description: Dentist License
+        in: query
+        name: license
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DentistResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get Dentist by License
+      tags:
+      - Dentist
+  /patients:
     get:
       description: Get all Patients
       responses:
@@ -467,15 +670,24 @@ paths:
             items:
               $ref: '#/definitions/PatientResponse'
             type: array
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       summary: Get all Patients
       tags:
-      - Patients
+      - Patient
     post:
       description: Create a Patient
       parameters:
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
       - description: PatientResponse
         in: body
-        name: Patient
+        name: Body
         required: true
         schema:
           $ref: '#/definitions/PatientPost'
@@ -487,41 +699,56 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
       security:
-      - Bearer: []
+      - APIKey: []
       summary: Create a Patient
       tags:
-      - Patients
-  /Patients/{id}:
+      - Patient
+  /patients/{id}:
     delete:
       description: Delete a Patient
       parameters:
-      - description: PatientResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Patient ID
         in: path
         name: id
         required: true
         type: integer
       responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/PatientResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Delete a Patient
       tags:
-      - Patients
+      - Patient
     get:
-      description: Get Patient by DNI
+      description: Get Patient by id
       parameters:
-      - description: PatientResponse DNI
+      - description: Patient ID
         in: path
         name: id
         required: true
@@ -534,25 +761,30 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
-      summary: Get Patient by DNI
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get Patient by id
       tags:
-      - Patients
+      - Patient
     patch:
       description: Patch a Patient
       parameters:
-      - description: PatientResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Patient ID
         in: path
         name: id
         required: true
         type: integer
       - description: PatientResponse
         in: body
-        name: Patient
+        name: Body
         required: true
         schema:
           $ref: '#/definitions/PatientPatch'
@@ -564,25 +796,40 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Patch a Patient
       tags:
-      - Patients
+      - Patient
     put:
       description: Update a Patient
       parameters:
-      - description: PatientResponse ID
+      - description: Public Key
+        in: header
+        name: PUB_KEY
+        required: true
+        type: string
+      - description: Patient ID
         in: path
         name: id
         required: true
         type: integer
       - description: PatientResponse
         in: body
-        name: Patient
+        name: Body
         required: true
         schema:
           $ref: '#/definitions/PatientPut'
@@ -594,24 +841,63 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - APIKey: []
       summary: Update a Patient
       tags:
-      - Patients
+      - Patient
+  /patients/q:
+    get:
+      description: Get Patient by DNI
+      parameters:
+      - description: Patient DNI
+        in: query
+        name: dni
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/PatientResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get Patient by DNI
+      tags:
+      - Patient
 produces:
 - application/json
 schemes:
 - http
 - https
 securityDefinitions:
-  Bearer:
-    description: 'Add Bearer token here, like this: Bearer {token}'
+  APIKey:
+    description: Add secret key here
     in: header
-    name: Authorization
+    name: SECRET_KEY
     type: apiKey
 swagger: "2.0"
 tags:

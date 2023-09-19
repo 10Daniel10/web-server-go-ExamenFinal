@@ -22,7 +22,7 @@ type AppointmentResponse struct {
 	Description string    `json:"description"`
 } //	@name	AppointmentResponse
 
-// @name	AppointmenttDetailResponse
+// AppointmentDetailResponse model for, response a Appointment
 type AppointmentDetailResponse struct {
 	Id          uint            `json:"id"`
 	Patient     PatientResponse `json:"patient"`
@@ -79,8 +79,9 @@ func NewAppointmentHandler(service AppointmentService, patient PatientService, d
 //
 //	@Summary		Get all Appointments
 //	@Description	Get all Appointments
-//	@Tags			Appointments
+//	@Tags			Appointment
 //	@Success		200	{array}	AppointmentResponse
+//	@Failure		503	{object}	ErrorResponse
 //	@Router			/appointments [get]
 func (a *AppointmentHandler) GetAll(ctx *gin.Context) {
 	appointments, err := a.service.GetAll()
@@ -119,11 +120,12 @@ func (a *AppointmentHandler) GetAll(ctx *gin.Context) {
 //
 //	@Summary		Get Appointment by id
 //	@Description	Get Appointment by id
-//	@Tags			Appointments
-//	@Param			id	path		int	true	"AppointmentResponse ID"
+//	@Tags			Appointment
+//	@Param			id	path		int	true	"Appointment ID"
 //	@Success		200	{object}	AppointmentResponse
-//	@Failure		400	{object}	Error
-//	@Failure		404	{object}	Error
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
+//	@Failure		503	{object}	ErrorResponse
 //	@Router			/appointments/{id} [get]
 func (a *AppointmentHandler) GetById(ctx *gin.Context) {
 	idParam := ctx.Param("id")
@@ -186,12 +188,13 @@ func (a *AppointmentHandler) GetById(ctx *gin.Context) {
 //
 //	@Summary		Get Appointment by DNI
 //	@Description	Get Appointment by DNI
-//	@Tags			Appointments
-//	@Param			id	path		int	true	"AppointmentResponse DNI"
+//	@Tags			Appointment
+//	@Param			dni	query		string	true	"Patient DNI"
 //	@Success		200	{object}	AppointmentResponse
-//	@Failure		400	{object}	Error
-//	@Failure		404	{object}	Error
-//	@Router			/appointments/{id} [get]
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
+//	@Failure		503	{object}	ErrorResponse
+//	@Router			/appointments/q [get]
 func (a *AppointmentHandler) GetByDNI(ctx *gin.Context) {
 	dniQuery := ctx.Query("dni")
 	if dniQuery == "" {
@@ -316,12 +319,14 @@ func (a *AppointmentHandler) GetByDNI(ctx *gin.Context) {
 //
 //	@Summary		Create a Appointment
 //	@Description	Create a Appointment
-//	@Tags			Appointments
+//	@Tags			Appointment
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Appointment body		AppointmentCreate true "AppointmentResponse"
+//	@Param			Appointment body		AppointmentPost true "AppointmentResponse"
 //	@Success		201		{object}	AppointmentResponse
-//	@Failure		400		{object}	Error
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		409		{object}	ErrorResponse
+//	@Failure		503		{object}	ErrorResponse
 //	@Router			/appointments [post]
 func (a *AppointmentHandler) Create(ctx *gin.Context) {
 	appointmentToPost := AppointmentPost{}
@@ -432,13 +437,16 @@ func (a *AppointmentHandler) Create(ctx *gin.Context) {
 //
 //	@Summary		Update a Appointment
 //	@Description	Update a Appointment
-//	@Tags			Appointments
+//	@Tags			Appointment
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Appointment body		AppointmentUpdate true "AppointmentResponse"
+//	@Param			id	path		int	true	"Appointment ID"
+//	@Param			Appointment body		AppointmentPut true "AppointmentResponse"
 //	@Success		200		{object}	AppointmentResponse
-//	@Failure		400		{object}	Error
-//	@Failure		404		{object}	Error
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		404		{object}	ErrorResponse
+//	@Failure		409		{object}	ErrorResponse
+//	@Failure		503		{object}	ErrorResponse
 //	@Router			/appointments/{id} [put]
 func (a *AppointmentHandler) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
@@ -581,13 +589,16 @@ func (a *AppointmentHandler) Update(ctx *gin.Context) {
 //
 //	@Summary		Patch a Appointment
 //	@Description	Patch a Appointment
-//	@Tags			Appointments
+//	@Tags			Appointment
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
+//	@Param			id	path		int	true	"Appointment ID"
 //	@Param			Appointment body		AppointmentPatch true "AppointmentResponse"
 //	@Success		200		{object}	AppointmentResponse
-//	@Failure		400		{object}	Error
-//	@Failure		404		{object}	Error
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		404		{object}	ErrorResponse
+//	@Failure		409		{object}	ErrorResponse
+//	@Failure		503		{object}	ErrorResponse
 //	@Router			/appointments/{id} [patch]
 func (a *AppointmentHandler) Patch(ctx *gin.Context) {
 	idParam := ctx.Param("id")
@@ -733,12 +744,13 @@ func (a *AppointmentHandler) Patch(ctx *gin.Context) {
 //
 //	@Summary		Delete a Appointment
 //	@Description	Delete a Appointment
-//	@Tags			Appointments
+//	@Tags			Appointment
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Appointment body		AppointmentDelete true "AppointmentResponse"
-//	@Failure		400	{object}	Error
-//	@Failure		404	{object}	Error
+//	@Param			id	path		int	true	"Appointment ID"
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
+//	@Failure		503	{object}	ErrorResponse
 //	@Router			/appointments/{id} [delete]
 func (a *AppointmentHandler) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")

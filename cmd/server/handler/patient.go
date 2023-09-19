@@ -76,8 +76,9 @@ func NewPatientHandler(service PatientService) *PatientHandler {
 //
 //	@Summary		Get all Patients
 //	@Description	Get all Patients
-//	@Tags			Patients
+//	@Tags			Patient
 //	@Success		200	{array}	PatientResponse
+//	@Failure		503	{object}	ErrorResponse
 //	@Router			/patients [get]
 func (p *PatientHandler) GetAll(ctx *gin.Context) {
 	patients, err := p.service.GetAll()
@@ -119,11 +120,11 @@ func (p *PatientHandler) GetAll(ctx *gin.Context) {
 //
 //	@Summary		Get Patient by id
 //	@Description	Get Patient by id
-//	@Tags			Patients
-//	@Param			id	path		int	true	"PatientResponse ID"
+//	@Tags			Patient
+//	@Param			id	path		int	true	"Patient ID"
 //	@Success		200	{object}	PatientResponse
-//	@Failure		400	{object}	Error
-//	@Failure		404	{object}	Error
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
 //	@Router			/patients/{id} [get]
 func (p *PatientHandler) GetById(ctx *gin.Context) {
 	idParam := ctx.Param("id")
@@ -178,14 +179,15 @@ func (p *PatientHandler) GetById(ctx *gin.Context) {
 
 // GetByID function to get Patient by DNI
 //
-//	@Summary		Get Patient by DNI
-//	@Description	Get Patient by DNI
-//	@Tags			Patients
-//	@Param			id	path		int	true	"PatientResponse DNI"
-//	@Success		200	{object}	PatientResponse
-//	@Failure		400	{object}	Error
-//	@Failure		404	{object}	Error
-//	@Router			/patients/{id} [get]
+//		@Summary		Get Patient by DNI
+//		@Description	Get Patient by DNI
+//		@Tags			Patient
+//		@Param			dni	query		string	true	"Patient DNI"
+//		@Success		200	{object}	PatientResponse
+//		@Failure		400	{object}	ErrorResponse
+//		@Failure		404	{object}	ErrorResponse
+//	 	@Failure		503	{object}	ErrorResponse
+//		@Router			/patients/q [get]
 func (p *PatientHandler) GetByDNI(ctx *gin.Context) {
 	dniQuery := ctx.Query("dni")
 	if dniQuery == "" {
@@ -237,12 +239,14 @@ func (p *PatientHandler) GetByDNI(ctx *gin.Context) {
 //
 //	@Summary		Create a Patient
 //	@Description	Create a Patient
-//	@Tags			Patients
+//	@Tags			Patient
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Patient body		PatientCreate true "PatientResponse"
+//	@Param			Patient Body body		PatientPost true "PatientResponse"
 //	@Success		201		{object}	PatientResponse
-//	@Failure		400		{object}	Error
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		409		{object}	ErrorResponse
+//	@Failure		503		{object}	ErrorResponse
 //	@Router			/patients [post]
 func (p *PatientHandler) Create(ctx *gin.Context) {
 	patientToPost := PatientPost{}
@@ -332,13 +336,16 @@ func (p *PatientHandler) Create(ctx *gin.Context) {
 //
 //	@Summary		Update a Patient
 //	@Description	Update a Patient
-//	@Tags			Patients
+//	@Tags			Patient
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Patient body		PatientUpdate true "PatientResponse"
+//	@Param			id	path		int	true	"Patient ID"
+//	@Param			Patient Body body		PatientPut true "PatientResponse"
 //	@Success		200		{object}	PatientResponse
-//	@Failure		400		{object}	Error
-//	@Failure		404		{object}	Error
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		404		{object}	ErrorResponse
+//	@Failure		409		{object}	ErrorResponse
+//	@Failure		503		{object}	ErrorResponse
 //	@Router			/patients/{id} [put]
 func (p *PatientHandler) Update(ctx *gin.Context) {
 	var err error
@@ -456,13 +463,16 @@ func (p *PatientHandler) Update(ctx *gin.Context) {
 //
 //	@Summary		Patch a Patient
 //	@Description	Patch a Patient
-//	@Tags			Patients
+//	@Tags			Patient
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Patient body		PatientPatch true "PatientResponse"
+//	@Param			id	path		int	true	"Patient ID"
+//	@Param			Patient Body body		PatientPatch true "PatientResponse"
 //	@Success		200		{object}	PatientResponse
-//	@Failure		400		{object}	Error
-//	@Failure		404		{object}	Error
+//	@Failure		400		{object}	ErrorResponse
+//	@Failure		404		{object}	ErrorResponse
+//	@Failure		409		{object}	ErrorResponse
+//	@Failure		503		{object}	ErrorResponse
 //	@Router			/patients/{id} [patch]
 func (p *PatientHandler) Patch(ctx *gin.Context) {
 	idParam := ctx.Param("id")
@@ -582,12 +592,13 @@ func (p *PatientHandler) Patch(ctx *gin.Context) {
 //
 //	@Summary		Delete a Patient
 //	@Description	Delete a Patient
-//	@Tags			Patients
+//	@Tags			Patient
 //	@security		APIKey
 //	@Param PUB_KEY	header string true "Public Key"
-//	@Param			Patient body		PatientDelete true "PatientResponse"
-//	@Failure		400	{object}	Error
-//	@Failure		404	{object}	Error
+//	@Param			id	path		int	true	"Patient ID"
+//	@Failure		400	{object}	ErrorResponse
+//	@Failure		404	{object}	ErrorResponse
+//	@Failure		503	{object}	ErrorResponse
 //	@Router			/patients/{id} [delete]
 func (p *PatientHandler) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")

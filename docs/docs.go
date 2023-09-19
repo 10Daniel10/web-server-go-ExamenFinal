@@ -30,11 +30,11 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/Appointments": {
+        "/appointments": {
             "get": {
                 "description": "Get all Appointments",
                 "tags": [
-                    "Appointments"
+                    "Appointment"
                 ],
                 "summary": "Get all Appointments",
                 "responses": {
@@ -46,21 +46,34 @@ const docTemplate = `{
                                 "$ref": "#/definitions/AppointmentResponse"
                             }
                         }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
                     }
                 }
             },
             "post": {
                 "security": [
                     {
-                        "Bearer": []
+                        "APIKey": []
                     }
                 ],
                 "description": "Create a Appointment",
                 "tags": [
-                    "Appointments"
+                    "Appointment"
                 ],
                 "summary": "Create a Appointment",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "AppointmentResponse",
                         "name": "Appointment",
@@ -81,23 +94,79 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/Appointments/{id}": {
+        "/appointments/q": {
             "get": {
                 "description": "Get Appointment by DNI",
                 "tags": [
-                    "Appointments"
+                    "Appointment"
                 ],
                 "summary": "Get Appointment by DNI",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Patient DNI",
+                        "name": "dni",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/appointments/{id}": {
+            "get": {
+                "description": "Get Appointment by id",
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "Get Appointment by id",
+                "parameters": [
+                    {
                         "type": "integer",
-                        "description": "AppointmentResponse DNI",
+                        "description": "Appointment ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -113,27 +182,45 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Update a Appointment",
                 "tags": [
-                    "Appointments"
+                    "Appointment"
                 ],
                 "summary": "Update a Appointment",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "AppointmentResponse ID",
+                        "description": "Appointment ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -158,63 +245,99 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Delete a Appointment",
                 "tags": [
-                    "Appointments"
+                    "Appointment"
                 ],
                 "summary": "Delete a Appointment",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "AppointmentResponse ID",
+                        "description": "Appointment ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/AppointmentResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Patch a Appointment",
                 "tags": [
-                    "Appointments"
+                    "Appointment"
                 ],
                 "summary": "Patch a Appointment",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "AppointmentResponse ID",
+                        "description": "Appointment ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -239,23 +362,35 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/Dentists": {
+        "/dentists": {
             "get": {
                 "description": "Get all Dentists",
                 "tags": [
-                    "Dentists"
+                    "Dentist"
                 ],
                 "summary": "Get all Dentists",
                 "responses": {
@@ -267,24 +402,37 @@ const docTemplate = `{
                                 "$ref": "#/definitions/DentistResponse"
                             }
                         }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
                     }
                 }
             },
             "post": {
                 "security": [
                     {
-                        "Bearer": []
+                        "APIKey": []
                     }
                 ],
                 "description": "Create a Dentist",
                 "tags": [
-                    "Dentists"
+                    "Dentist"
                 ],
                 "summary": "Create a Dentist",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "DentistResponse",
-                        "name": "Dentist",
+                        "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -302,23 +450,73 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/Dentists/{id}": {
+        "/dentists/q": {
             "get": {
                 "description": "Get Dentist by License",
                 "tags": [
-                    "Dentists"
+                    "Dentist"
                 ],
                 "summary": "Get Dentist by License",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Dentist License",
+                        "name": "license",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DentistResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/dentists/{id}": {
+            "get": {
+                "description": "Get Dentist by id",
+                "tags": [
+                    "Dentist"
+                ],
+                "summary": "Get Dentist by id",
+                "parameters": [
+                    {
                         "type": "integer",
-                        "description": "DentistResponse License",
+                        "description": "Dentist ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -334,35 +532,55 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
-            "delete": {
-                "description": "Delete a Dentist",
-                "tags": [
-                    "Dentists"
+            "put": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
                 ],
-                "summary": "Delete a Dentist",
+                "description": "Update a Dentist",
+                "tags": [
+                    "Dentist"
+                ],
+                "summary": "Update a Dentist",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "DentistResponse ID",
-                        "name": "id",
-                        "in": "path",
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "DentistResponse",
+                        "name": "Dentist",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DentistPut"
+                        }
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/DentistResponse"
                         }
@@ -370,29 +588,94 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
+                "description": "Delete a Dentist",
+                "tags": [
+                    "Dentist"
+                ],
+                "summary": "Delete a Dentist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Dentist ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Patch a Dentist",
                 "tags": [
-                    "Dentists"
+                    "Dentist"
                 ],
                 "summary": "Patch a Dentist",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "DentistResponse ID",
-                        "name": "id",
-                        "in": "path",
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
                         "required": true
                     },
                     {
@@ -415,23 +698,35 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/Patients": {
+        "/patients": {
             "get": {
                 "description": "Get all Patients",
                 "tags": [
-                    "Patients"
+                    "Patient"
                 ],
                 "summary": "Get all Patients",
                 "responses": {
@@ -443,24 +738,37 @@ const docTemplate = `{
                                 "$ref": "#/definitions/PatientResponse"
                             }
                         }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
                     }
                 }
             },
             "post": {
                 "security": [
                     {
-                        "Bearer": []
+                        "APIKey": []
                     }
                 ],
                 "description": "Create a Patient",
                 "tags": [
-                    "Patients"
+                    "Patient"
                 ],
                 "summary": "Create a Patient",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "PatientResponse",
-                        "name": "Patient",
+                        "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -478,23 +786,79 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/Patients/{id}": {
+        "/patients/q": {
             "get": {
                 "description": "Get Patient by DNI",
                 "tags": [
-                    "Patients"
+                    "Patient"
                 ],
                 "summary": "Get Patient by DNI",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Patient DNI",
+                        "name": "dni",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/PatientResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/patients/{id}": {
+            "get": {
+                "description": "Get Patient by id",
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "Get Patient by id",
+                "parameters": [
+                    {
                         "type": "integer",
-                        "description": "PatientResponse DNI",
+                        "description": "Patient ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -510,34 +874,46 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Update a Patient",
                 "tags": [
-                    "Patients"
+                    "Patient"
                 ],
                 "summary": "Update a Patient",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "PatientResponse ID",
+                        "description": "Patient ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "description": "PatientResponse",
-                        "name": "Patient",
+                        "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -555,70 +931,106 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Delete a Patient",
                 "tags": [
-                    "Patients"
+                    "Patient"
                 ],
                 "summary": "Delete a Patient",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "PatientResponse ID",
+                        "description": "Patient ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/PatientResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "APIKey": []
+                    }
+                ],
                 "description": "Patch a Patient",
                 "tags": [
-                    "Patients"
+                    "Patient"
                 ],
                 "summary": "Patch a Patient",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Public Key",
+                        "name": "PUB_KEY",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "PatientResponse ID",
+                        "description": "Patient ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "description": "PatientResponse",
-                        "name": "Patient",
+                        "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -636,13 +1048,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -766,6 +1190,25 @@ const docTemplate = `{
                 }
             }
         },
+        "DentistPut": {
+            "type": "object",
+            "required": [
+                "last_name",
+                "license",
+                "name"
+            ],
+            "properties": {
+                "last_name": {
+                    "type": "string"
+                },
+                "license": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "DentistResponse": {
             "type": "object",
             "properties": {
@@ -783,7 +1226,7 @@ const docTemplate = `{
                 }
             }
         },
-        "Error": {
+        "ErrorResponse": {
             "type": "object",
             "properties": {
                 "errors": {
@@ -919,10 +1362,10 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "Bearer": {
-            "description": "Add Bearer token here, like this: Bearer {token}",
+        "APIKey": {
+            "description": "Add secret key here",
             "type": "apiKey",
-            "name": "Authorization",
+            "name": "SECRET_KEY",
             "in": "header"
         }
     },
