@@ -66,7 +66,7 @@ func NewDentistHandler(service DentistService) *DentistHandler {
 //	@Description	Get all Dentists
 //	@Tags			Dentists
 //	@Success		200	{array}	DentistResponse
-//	@Router			/Dentists [get]
+//	@Router			/dentists [get]
 func (d *DentistHandler) GetAll(ctx *gin.Context) {
 	dentists, err := d.service.GetAll()
 	if err != nil {
@@ -109,7 +109,7 @@ func (d *DentistHandler) GetAll(ctx *gin.Context) {
 //	@Success		200	{object}	DentistResponse
 //	@Failure		400	{object}	Error
 //	@Failure		404	{object}	Error
-//	@Router			/Dentists/{id} [get]
+//	@Router			/dentists/{id} [get]
 func (d *DentistHandler) GetById(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -174,7 +174,7 @@ func (d *DentistHandler) GetById(ctx *gin.Context) {
 //	@Success		200	{object}	DentistResponse
 //	@Failure		400	{object}	Error
 //	@Failure		404	{object}	Error
-//	@Router			/Dentists/{id} [get]
+//	@Router			/dentists/{id} [get]
 func (d *DentistHandler) GetByLicense(ctx *gin.Context) {
 	licenseQuery := ctx.Query("license")
 	if licenseQuery == "" {
@@ -224,11 +224,12 @@ func (d *DentistHandler) GetByLicense(ctx *gin.Context) {
 //	@Summary		Create a Dentist
 //	@Description	Create a Dentist
 //	@Tags			Dentists
-//	@security		Bearer
-//	@Param			Dentist	body		DentistPost	true	"DentistResponse"
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Dentist body		DentistPost true "DentistResponse"
 //	@Success		201		{object}	DentistResponse
 //	@Failure		400		{object}	Error
-//	@Router			/Dentists [post]
+//	@Router			/dentists [post]
 func (d *DentistHandler) Create(ctx *gin.Context) {
 	dentistToCreated := DentistPost{}
 	err := ctx.ShouldBindJSON(&dentistToCreated)
@@ -306,12 +307,13 @@ func (d *DentistHandler) Update(ctx *gin.Context) {
 	//	@Summary		Update a Dentist
 	//	@Description	Update a Dentist
 	//	@Tags			Dentists
-	//	@Param			id		path		int			true	"DentistResponse ID"
-	//	@Param			Dentist	body		DentistPut	true	"DentistResponse"
+	//	@security		APIKey
+	//	@Param PUB_KEY	header string true "Public Key"
+	//	@Param			Dentist body		DentistUpdate true "DentistResponse"
 	//	@Success		200		{object}	DentistResponse
 	//	@Failure		400		{object}	Error
 	//	@Failure		404		{object}	Error
-	//	@Router			/Dentists/{id} [put]
+	//	@Router			/dentists/{id} [put]
 	id, err := strconv.ParseUint(idParam, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, ErrorResponse{
@@ -393,12 +395,13 @@ func (d *DentistHandler) Update(ctx *gin.Context) {
 //	@Summary		Patch a Dentist
 //	@Description	Patch a Dentist
 //	@Tags			Dentists
-//	@Param			id		path		int				true	"DentistResponse ID"
-//	@Param			Dentist	body		DentistPatch	true	"DentistResponse"
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Dentist body		DentistPatch true "DentistResponse"
 //	@Success		200		{object}	DentistResponse
 //	@Failure		400		{object}	Error
 //	@Failure		404		{object}	Error
-//	@Router			/Dentists/{id} [patch]
+//	@Router			/dentists/{id} [patch]
 func (d *DentistHandler) Patch(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -479,11 +482,12 @@ func (d *DentistHandler) Patch(ctx *gin.Context) {
 //	@Summary		Delete a Dentist
 //	@Description	Delete a Dentist
 //	@Tags			Dentists
-//	@Param			id	path		int	true	"DentistResponse ID"
-//	@Success		204	{object}	DentistResponse
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Dentist body		DentistDelete true "DentistResponse"
 //	@Failure		400	{object}	Error
 //	@Failure		404	{object}	Error
-//	@Router			/Dentists/{id} [delete]
+//	@Router			/dentists/{id} [delete]
 func (d *DentistHandler) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {

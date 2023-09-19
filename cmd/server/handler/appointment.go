@@ -13,42 +13,47 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// AppointmentResponse model for, response a Appointment
 type AppointmentResponse struct {
 	Id          uint      `json:"id"`
 	PatientID   uint      `json:"patient_id"`
 	DentistID   uint      `json:"dentist_id"`
 	Date        time.Time `json:"date"`
 	Description string    `json:"description"`
-}
+} //	@name	AppointmentResponse
 
+// @name	AppointmenttDetailResponse
 type AppointmentDetailResponse struct {
 	Id          uint            `json:"id"`
 	Patient     PatientResponse `json:"patient"`
 	Dentist     DentistResponse `json:"dentist"`
 	Date        time.Time       `json:"date"`
 	Description string          `json:"description"`
-}
+} //	@name	AppointmentDetailResponse
 
+// AppointmentPost model for creating a Appointment
 type AppointmentPost struct {
 	PatientDNI     string `json:"patient_dni" binding:"required"`
 	DentistLicense string `json:"dentist_license" binding:"required"`
 	Date           string `json:"date" binding:"required"`
 	Description    string `json:"description" binding:"required"`
-}
+} //	@name	AppointmentPost
 
+// AppointmentPut model for updating a Appointment
 type AppointmentPut struct {
 	PatientID   uint   `json:"patient_id" binding:"required"`
 	DentistID   uint   `json:"dentist_id" binding:"required"`
 	Date        string `json:"date" binding:"required"`
 	Description string `json:"description" binding:"required"`
-}
+} //	@name	AppointmentPut
 
+// AppointmentPatch model for updating a Appointment
 type AppointmentPatch struct {
 	PatientID   uint   `json:"patient_id"`
 	DentistID   uint   `json:"dentist_id"`
 	Date        string `json:"date"`
 	Description string `json:"description"`
-}
+} //	@name	AppointmentPatch
 
 type AppointmentService interface {
 	GetAll() ([]appointment.Appointment, error)
@@ -70,6 +75,13 @@ func NewAppointmentHandler(service AppointmentService, patient PatientService, d
 	return &AppointmentHandler{service: service, patientService: patient, dentistService: dentist}
 }
 
+// GetAll function to get all Appointments
+//
+//	@Summary		Get all Appointments
+//	@Description	Get all Appointments
+//	@Tags			Appointments
+//	@Success		200	{array}	AppointmentResponse
+//	@Router			/appointments [get]
 func (a *AppointmentHandler) GetAll(ctx *gin.Context) {
 	appointments, err := a.service.GetAll()
 	if err != nil {
@@ -103,6 +115,16 @@ func (a *AppointmentHandler) GetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// GetByID function to get Appointment by id
+//
+//	@Summary		Get Appointment by id
+//	@Description	Get Appointment by id
+//	@Tags			Appointments
+//	@Param			id	path		int	true	"AppointmentResponse ID"
+//	@Success		200	{object}	AppointmentResponse
+//	@Failure		400	{object}	Error
+//	@Failure		404	{object}	Error
+//	@Router			/appointments/{id} [get]
 func (a *AppointmentHandler) GetById(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -160,6 +182,16 @@ func (a *AppointmentHandler) GetById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// GetByID function to get Appointment by DNI
+//
+//	@Summary		Get Appointment by DNI
+//	@Description	Get Appointment by DNI
+//	@Tags			Appointments
+//	@Param			id	path		int	true	"AppointmentResponse DNI"
+//	@Success		200	{object}	AppointmentResponse
+//	@Failure		400	{object}	Error
+//	@Failure		404	{object}	Error
+//	@Router			/appointments/{id} [get]
 func (a *AppointmentHandler) GetByDNI(ctx *gin.Context) {
 	dniQuery := ctx.Query("dni")
 	if dniQuery == "" {
@@ -280,6 +312,17 @@ func (a *AppointmentHandler) GetByDNI(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// Create function to create a Appointment
+//
+//	@Summary		Create a Appointment
+//	@Description	Create a Appointment
+//	@Tags			Appointments
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Appointment body		AppointmentCreate true "AppointmentResponse"
+//	@Success		201		{object}	AppointmentResponse
+//	@Failure		400		{object}	Error
+//	@Router			/appointments [post]
 func (a *AppointmentHandler) Create(ctx *gin.Context) {
 	appointmentToPost := AppointmentPost{}
 	err := ctx.ShouldBindJSON(&appointmentToPost)
@@ -385,6 +428,18 @@ func (a *AppointmentHandler) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, body)
 }
 
+// Update function to update a Appointment
+//
+//	@Summary		Update a Appointment
+//	@Description	Update a Appointment
+//	@Tags			Appointments
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Appointment body		AppointmentUpdate true "AppointmentResponse"
+//	@Success		200		{object}	AppointmentResponse
+//	@Failure		400		{object}	Error
+//	@Failure		404		{object}	Error
+//	@Router			/appointments/{id} [put]
 func (a *AppointmentHandler) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -522,6 +577,18 @@ func (a *AppointmentHandler) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// Patch function to patch a Appointment
+//
+//	@Summary		Patch a Appointment
+//	@Description	Patch a Appointment
+//	@Tags			Appointments
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Appointment body		AppointmentPatch true "AppointmentResponse"
+//	@Success		200		{object}	AppointmentResponse
+//	@Failure		400		{object}	Error
+//	@Failure		404		{object}	Error
+//	@Router			/appointments/{id} [patch]
 func (a *AppointmentHandler) Patch(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
@@ -662,6 +729,17 @@ func (a *AppointmentHandler) Patch(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, body)
 }
 
+// Delete function to delete a Appointment
+//
+//	@Summary		Delete a Appointment
+//	@Description	Delete a Appointment
+//	@Tags			Appointments
+//	@security		APIKey
+//	@Param PUB_KEY	header string true "Public Key"
+//	@Param			Appointment body		AppointmentDelete true "AppointmentResponse"
+//	@Failure		400	{object}	Error
+//	@Failure		404	{object}	Error
+//	@Router			/appointments/{id} [delete]
 func (a *AppointmentHandler) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	if idParam == "" {
