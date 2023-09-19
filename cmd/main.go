@@ -24,6 +24,16 @@ import (
 // @tag.docs.url http://swagger.io/terms/
 // @tag.docs.description Patient operations for managing Patient
 
+// @tag.name	Dentist
+// @tag.description Dentist operations for managing Dentist
+// @tag.docs.url http://swagger.io/terms/
+// @tag.docs.description Dentist operations for managing Dentist
+
+// @tag.name	Appointment
+// @tag.description Appointment operations for managing Appointment
+// @tag.docs.url http://swagger.io/terms/
+// @tag.docs.description Dentist operations for managing Appointment
+
 //	@accept		json
 //	@produce	json
 
