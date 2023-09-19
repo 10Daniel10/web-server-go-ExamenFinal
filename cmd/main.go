@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/config"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/external/database"
@@ -9,6 +10,7 @@ import (
 	"github.com/10Daniel10/web-server-go-ExamenFinal/cmd/server/middleware"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/appointment"
 	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/dentist"
+	"github.com/10Daniel10/web-server-go-ExamenFinal/internal/patient"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -41,6 +43,16 @@ func main() {
 	}
 
 	router := config.SetupRouter()
+	{
+		// Define global behavior
+		router.NoRoute(func(c *gin.Context) {
+			c.JSON(http.StatusNotFound, gin.H{"message": "Not found"})
+		})
+
+		router.NoMethod(func(c *gin.Context) {
+			c.JSON(http.StatusMethodNotAllowed, gin.H{"message": "Method not allowed"})
+		})
+	}
 	baseGroup := router.Group(envConfig.Private.BasePath)
 	{
 		baseGroup.GET("/ping", func(c *gin.Context) {
@@ -90,6 +102,23 @@ func main() {
 		appointmentGroup.PATCH("/:id", controller.Patch)
 		//appointmentGroup.GET("/by-dni", controller.GetAppointmentByDNI)
 
+	}
+
+	patientGroup := baseGroup.Group("/patients")
+	{
+		// Initialize and inject dependencies
+		repository := database.NewPatientRepository(db)
+		service := patient.NewService(repository)
+		controller := handler.NewPatientHandler(service)
+
+		// Configure routes
+		patientGroup.GET("", controller.GetAll)
+		patientGroup.GET("/q", controller.GetByDNI)
+		patientGroup.GET("/:id", controller.GetById)
+		patientGroup.POST("", controller.Create)
+		patientGroup.PUT("/:id", controller.Update)
+		patientGroup.PATCH("/:id", controller.Patch)
+		patientGroup.DELETE("/:id", controller.Delete)
 	}
 
 	err = router.Run(envConfig.Private.Host)
