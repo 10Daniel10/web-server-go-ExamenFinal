@@ -14,6 +14,36 @@ import (
 	"github.com/joho/godotenv"
 )
 
+//	@title			Dental Clinic API
+//	@version		2.0
+//	@description	API of Dental Clinic
+//	@termsOfService	http://swagger.io/terms/
+
+// @tag.name	Patient
+// @tag.description Patient operations for managing Patient
+// @tag.docs.url http://swagger.io/terms/
+// @tag.docs.description Patient operations for managing Patient
+
+//	@accept		json
+//	@produce	json
+
+//	@schemes	http https
+
+//	@contact.name	Gabriela Cecilia Calicanton
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	gabriela.calicanton@gmail.com
+
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+
+//	@securityDefinitions.apikey	Bearer
+//	@in							header
+//	@name						Authorization
+//	@description				Add Bearer token here, like this: Bearer {token}
+
+// @externalDocs.description	OpenAPI
+// @externalDocs.url			https://swagger.io/resources/open-api/
+
 func main() {
 	var err error
 
