@@ -68,7 +68,7 @@ func NewPatientHandler(service PatientService) *PatientHandler {
 }
 
 func (p *PatientHandler) GetAll(ctx *gin.Context) {
-	data, err := p.service.GetAll()
+	patients, err := p.service.GetAll()
 	if err != nil {
 		if errors.Is(err, internal.ErServiceUnavailable) {
 			ctx.JSON(http.StatusServiceUnavailable, ErrorResponse{
@@ -82,22 +82,22 @@ func (p *PatientHandler) GetAll(ctx *gin.Context) {
 		return
 	}
 
-	if len(data) == 0 {
-		ctx.JSON(http.StatusOK, data)
+	if len(patients) == 0 {
+		ctx.JSON(http.StatusOK, patients)
 		return
 	}
 
 	var body []PatientResponse
-	for index, item := range data {
-		body[index] = PatientResponse{
-			Id:            item.ID,
-			Name:          item.Name,
-			LastName:      item.Lastname,
-			Address:       item.Address,
-			DNI:           item.DNI,
-			Email:         item.Email,
-			AdmissionDate: item.AdmissionDate,
-		}
+	for _, currentPatient := range patients {
+		body = append(body, PatientResponse{
+			Id:            currentPatient.ID,
+			Name:          currentPatient.Name,
+			LastName:      currentPatient.Lastname,
+			Address:       currentPatient.Address,
+			DNI:           currentPatient.DNI,
+			Email:         currentPatient.Email,
+			AdmissionDate: currentPatient.AdmissionDate,
+		})
 	}
 
 	ctx.JSON(http.StatusOK, body)
