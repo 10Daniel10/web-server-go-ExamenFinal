@@ -30,6 +30,227 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/Appointments": {
+            "get": {
+                "description": "Get all Appointments",
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Get all Appointments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AppointmentResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a Appointment",
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Create a Appointment",
+                "parameters": [
+                    {
+                        "description": "AppointmentResponse",
+                        "name": "Appointment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/Appointments/{id}": {
+            "get": {
+                "description": "Get Appointment by DNI",
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Get Appointment by DNI",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AppointmentResponse DNI",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a Appointment",
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Update a Appointment",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AppointmentResponse ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AppointmentResponse",
+                        "name": "Appointment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentPut"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a Appointment",
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Delete a Appointment",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AppointmentResponse ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a Appointment",
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Patch a Appointment",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AppointmentResponse ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AppointmentResponse",
+                        "name": "Appointment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentPatch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AppointmentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/Dentists": {
             "get": {
                 "description": "Get all Dentists",
@@ -429,6 +650,89 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "AppointmentPatch": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "AppointmentPost": {
+            "type": "object",
+            "required": [
+                "date",
+                "dentist_license",
+                "description",
+                "patient_dni"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "dentist_license": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "patient_dni": {
+                    "type": "string"
+                }
+            }
+        },
+        "AppointmentPut": {
+            "type": "object",
+            "required": [
+                "date",
+                "dentist_id",
+                "description",
+                "patient_id"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "AppointmentResponse": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "patient_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "DentistPatch": {
             "type": "object",
             "properties": {
@@ -628,6 +932,22 @@ const docTemplate = `{
             "name": "Patient",
             "externalDocs": {
                 "description": "Patient operations for managing Patient",
+                "url": "http://swagger.io/terms/"
+            }
+        },
+        {
+            "description": "Dentist operations for managing Dentist",
+            "name": "Dentist",
+            "externalDocs": {
+                "description": "Dentist operations for managing Dentist",
+                "url": "http://swagger.io/terms/"
+            }
+        },
+        {
+            "description": "Appointment operations for managing Appointment",
+            "name": "Appointment",
+            "externalDocs": {
+                "description": "Appointment operations for managing Appointment",
                 "url": "http://swagger.io/terms/"
             }
         }
