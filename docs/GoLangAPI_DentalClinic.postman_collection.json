@@ -1,0 +1,592 @@
+{
+	"info": {
+		"_postman_id": "6ab74aa0-1d43-4d6d-924a-95951097351c",
+		"name": "GoLang API / Dental Clinic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9909687"
+	},
+	"item": [
+		{
+			"name": "Dentists",
+			"item": [
+				{
+					"name": "Dentists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dentists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dentist by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dentists/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dentist by License",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dentists/q?license=d-0101",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists",
+								"q"
+							],
+							"query": [
+								{
+									"key": "license",
+									"value": "d-0101"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Dentist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "PUBLIC_KEY",
+								"value": "local_key",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Juan\",\r\n    \"last_name\": \"Hernández\",\r\n    \"license\": \"E-0101\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/dentists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dentist by Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"last_name\": \"ramírez\",\r\n    \"name\": \"juan\",\r\n    \"license\": \"d-010ñ\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/dentists/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dentist by Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"last_name\": \"ramírez\",\r\n    \"name\": \"juan\",\r\n    \"license\": \"d-010q\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/dentists/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dentist by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dentists/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patients",
+			"item": [
+				{
+					"name": "Patients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patient by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patient by DNI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/patients/q?dni=1002544110",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"q"
+							],
+							"query": [
+								{
+									"key": "dni",
+									"value": "1002544110"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Patient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "PUBLIC_KEY",
+								"value": "local_key",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Juan\",\r\n    \"last_name\": \"Hernández\",\r\n    \"address\": \"mzl - col\",\r\n    \"dni\": \"1002544110\",\r\n    \"email\": \"juanhernandez@email.com\",\r\n    \"admission_date\": \"2023-09-19T10:22:00-05:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/patients",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patient by Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Juan\",\r\n    \"last_name\": \"Hernández\",\r\n    \"address\": \"mzl - col\",\r\n    \"dni\": \"1002544110\",\r\n    \"email\": \"juanhernandez@email.com\",\r\n    \"admission_date\": \"18/09/23 2:30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/patients/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patients by Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Juan\",\r\n    \"last_name\": \"Hernández\",\r\n    \"address\": \"mzl - col\",\r\n    \"dni\": \"1002544110\",\r\n    \"email\": \"juanhernandez@email.com\",\r\n    \"admission_date\": \"2023-09-18T18:35:00-05:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/patients/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dentist by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dentists/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dentists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/appointments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Appointment by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/appointments/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Appointment by DNI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/appointments/q?dni=1002544110",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments",
+								"q"
+							],
+							"query": [
+								{
+									"key": "dni",
+									"value": "1002544110"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Appointment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "PUBLIC_KEY",
+								"value": "local_key",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patient_dni\": \"1002544110\",\r\n    \"dentist_license\": \"e-0101\",\r\n    \"date\": \"2023-09-19T10:23:00-05:00\",\r\n    \"description\": \"new appointment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/appointments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Appointment by Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patient_id\": 1,\r\n    \"dentist_id\": 1,\r\n    \"date\": \"2023-09-18T18:35:00-05:00\",\r\n    \"description\": \"new appointment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/appointments/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Appointment by Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"patient_id\": 1,\r\n    \"dentist_id\": 1,\r\n    \"date\": \"2023-09-18T18:35:00-05:00\",\r\n    \"description\": \"new appointment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/appointments/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Appointment by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/appointments/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/ping",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "SECRET_KEY",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "secret_dental_clinic",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "port",
+			"value": "8080",
+			"type": "string"
+		},
+		{
+			"key": "address",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "basePath",
+			"value": "/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "host",
+			"value": "http://{{address}}:{{port}}{{basePath}}",
+			"type": "string"
+		}
+	]
+}
